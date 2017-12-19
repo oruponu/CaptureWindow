@@ -12,9 +12,6 @@ namespace CaptureWindow
             InitializeComponent();
         }
 
-        [DllImport("User32.dll")]
-        private static extern bool PrintWindow(IntPtr hwnd, IntPtr hdcBlt, uint nFlags);
-
         private void button1_Click(object sender, EventArgs e)
         {
             var image = CaptureControl();
@@ -27,10 +24,16 @@ namespace CaptureWindow
             var image = new Bitmap(Width, Height);
             var graphics = Graphics.FromImage(image);
             var hdc = graphics.GetHdc();
-            PrintWindow(Handle, hdc, 0);
+            NativeMethods.PrintWindow(Handle, hdc, 0);
             graphics.ReleaseHdc(hdc);
             graphics.Dispose();
             return image;
         }
+    }
+
+    internal static class NativeMethods
+    {
+        [DllImport("User32.dll")]
+        internal static extern bool PrintWindow(IntPtr hwnd, IntPtr hdcBlt, uint nFlags);
     }
 }
